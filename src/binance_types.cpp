@@ -1,6 +1,6 @@
 #include "binance_types.h"
 
-binance_EXPORT json::value binance::types::request::KLines::to_json() const
+json::value binance::types::request::KLines::to_json() const
 {
     json::value obj;
     obj[_SU("symbol")] = json::value::string(symbol);
@@ -14,8 +14,7 @@ binance_EXPORT json::value binance::types::request::KLines::to_json() const
 
     return obj;
 }
-
-binance_EXPORT void binance::types::request::KLines::from_json(json::value &obj)
+void binance::types::request::KLines::from_json(json::value &obj)
 {
     symbol = std::move(obj[_SU("symbol")].as_string());
     interval = std::move(obj[_SU("interval")].as_string());
@@ -24,13 +23,13 @@ binance_EXPORT void binance::types::request::KLines::from_json(json::value &obj)
     limit = obj[_SU("limit")].as_integer();
 }
 
-binance_EXPORT void binance::types::response::Error::from_json(json::value &val)
+void binance::types::response::Error::from_json(json::value &val)
 {
     code = val[_SU("code")].as_integer();
     message = val[_SU("msg")].as_string();
 }
 
-binance_EXPORT json::value binance::types::response::Error::to_json() const
+json::value binance::types::response::Error::to_json() const
 {
     json::value obj;
     obj[_SU("msg")] = json::value::string(message);
@@ -38,12 +37,13 @@ binance_EXPORT json::value binance::types::response::Error::to_json() const
     return obj;
 }
 
-binance_EXPORT const char *binance::types::response::Error::what() const noexcept
+const char *binance::types::response::Error::what() const noexcept
 {
-    return message.data();
+    return nullptr;
+    // return message.data();
 }
 
-binance_EXPORT void binance::types::response::KLine::from_json(json::value &val)
+void binance::types::response::KLine::from_json(json::value &val)
 {
     if (!val.is_array())
     {
@@ -56,21 +56,21 @@ binance_EXPORT void binance::types::response::KLine::from_json(json::value &val)
         // TODO: format error ...
         throw;
     }
-    open_time = milliseconds{arr[0].as_number().to_int64()};
-    open = big_float{arr[1].as_string()};
-    high = big_float{arr[2].as_string()};
-    low = big_float{arr[3].as_string()};
-    close = big_float{arr[4].as_string()};
-    volume = big_float{arr[5].as_string()};
-    close_time = milliseconds{arr[6].as_number().to_int64()};
-    quote_asset_vol = big_float{arr[7].as_string()};
-    number_of_trades = arr[8].as_number().to_int64();
-    taker_buy_base_asset_volume = big_float{arr[9].as_string()};
-    taker_buy_quote_asset_volume = big_float{arr[10].as_string()};
+    // open_time = milliseconds{arr[0].as_number().to_int64()};
+    // open = big_float{arr[1].as_string()};
+    // high = big_float{arr[2].as_string()};
+    // low = big_float{arr[3].as_string()};
+    // close = big_float{arr[4].as_string()};
+    // volume = big_float{arr[5].as_string()};
+    // close_time = milliseconds{arr[6].as_number().to_int64()};
+    // quote_asset_vol = big_float{arr[7].as_string()};
+    // number_of_trades = arr[8].as_number().to_int64();
+    // taker_buy_base_asset_volume = big_float{arr[9].as_string()};
+    // taker_buy_quote_asset_volume = big_float{arr[10].as_string()};
     // ignore = big_float{arr[11].as_string()};
 }
 
-binance_EXPORT json::value binance::types::response::KLine::to_json() const
+json::value binance::types::response::KLine::to_json() const
 {
     json::value arr;
     return arr;

@@ -12,7 +12,8 @@ class BinancesdkConan(ConanFile):
     url = ""
     description = ""
     topics = ("binance", "trading")
-
+    generators = "cmake"
+    install_folder = "build "
     # Binary configuration
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False], "fPIC": [True, False]}

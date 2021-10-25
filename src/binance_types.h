@@ -39,16 +39,13 @@ using big_float = boost::multiprecision::cpp_dec_float_50;
 
 namespace binance
 {
-
-    template <typename T = u_params_map>
-    binance_EXPORT string_t to_query_string(const T &params);
     namespace types
     {
         template <typename T>
         struct binance_EXPORT Array
         {
             static constexpr auto _has_from_json = has_from_json<T>::value;
-            binance_EXPORT void from_json(json::value &val)
+            void from_json(json::value &val)
             {
                 if (!val.is_array())
                 {
@@ -62,7 +59,7 @@ namespace binance
                     i++;
                 }
             }
-            binance_EXPORT json::array to_json() const
+            json::array to_json() const
             {
                 auto arr = json::array(values.size);
                 int i{0};
@@ -87,7 +84,7 @@ namespace binance
                 int limit;
 
                 template <typename T = u_params_map>
-                binance_EXPORT T to_query_params() const
+                T to_query_params() const
                 {
                     T params{};
                     params.insert(param_entry{_SU("symbol"), symbol});
@@ -104,8 +101,8 @@ namespace binance
                     return params;
                 }
 
-                binance_EXPORT json::value to_json() const;
-                binance_EXPORT void from_json(json::value &obj);
+                json::value to_json() const;
+                void from_json(json::value &obj);
             };
         }
         namespace response
@@ -115,8 +112,8 @@ namespace binance
                 int64_t code;
                 string_t message;
 
-                binance_EXPORT json::value to_json() const;
-                binance_EXPORT void from_json(json::value &obj);
+                json::value to_json() const;
+                void from_json(json::value &obj);
 
                 const char *what() const noexcept override;
             };
@@ -135,29 +132,29 @@ namespace binance
                 big_float taker_buy_quote_asset_volume;
                 big_float ignore;
 
-                binance_EXPORT json::value to_json() const;
-                binance_EXPORT void from_json(json::value &obj);
+                json::value to_json() const;
+                void from_json(json::value &obj);
             };
         }
     }
-}
 
-template <typename T = u_params_map>
-binance_EXPORT string_t binance::to_query_string(const T &params)
-{
-    ostringstream_t stream;
-    string_t sym{"?"};
-    for (auto &&pair : params)
+    template <typename T = u_params_map>
+    binance_EXPORT string_t to_query_string(const T &params)
     {
-        stream
-            << sym
-            << pair.first
-            << "="
-            << pair.second;
-        sym = "&";
+        ostringstream_t stream;
+        string_t sym{"?"};
+        for (auto &&pair : params)
+        {
+            stream
+                << sym
+                << pair.first
+                << "="
+                << pair.second;
+            sym = "&";
+        }
+        sym = stream.str();
+        return sym;
     }
-    sym = stream.str();
-    return sym;
 }
 
 #endif // BINANCESDK_BINANCE_TYPES_H

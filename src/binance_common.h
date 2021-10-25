@@ -13,13 +13,13 @@ using namespace utility; // Common utilities like string conversions
 
 #ifdef WIN32
 template <typename T>
-constexpr string_t _itoa(T v)
+constexpr std::wstring _itoa(T v)
 {
     return std::to_wstring(v);
 }
 #else
 template <typename T>
-constexpr string_t _itoa(T v)
+constexpr std::string _itoa(T v)
 {
     return std::to_string(v);
 }

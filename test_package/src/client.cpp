@@ -62,33 +62,33 @@ TEST_F(ClientTest, Queries)
     ASSERT_STREQ(_SU("?interval=1m&symbol=BTCUSDT"), str.c_str());
 }
 
-TEST_F(ClientTest, TestGet)
-{
-    ASSERT_THROW(
-        {
-            types::request::KLines req{};
-            req.symbol = _SU("BTCUSDT");
-            // req.interval = U("1m");
-            auto j = req.to_query_params();
-            auto r = client.get<types::Array<types::response::KLine>>(_SU("/api/v3/klines"), j);
-        },
-        types::response::Error);
-    ASSERT_NO_THROW(
-        {
-            types::request::KLines req{};
-            req.symbol = _SU("BTCUSDT");
-            req.interval = _SU("1m");
+// TEST_F(ClientTest, TestGet)
+// {
+//     ASSERT_THROW(
+//         {
+//             types::request::KLines req{};
+//             req.symbol = _SU("BTCUSDT");
+//             // req.interval = U("1m");
+//             auto j = req.to_query_params();
+//             auto r = client.get<types::Array<types::response::KLine>>(_SU("/api/v3/klines"), j);
+//         },
+//         types::response::Error);
+//     ASSERT_NO_THROW(
+//         {
+//             types::request::KLines req{};
+//             req.symbol = _SU("BTCUSDT");
+//             req.interval = _SU("1m");
 
-            constexpr system_clock::time_point tp =
-                sys_days{2019_y / jan / 1_d};
-            req.start_time =
-                std::chrono::duration_cast<std::chrono::milliseconds>(tp.time_since_epoch());
+//             constexpr system_clock::time_point tp =
+//                 sys_days{2019_y / jan / 1_d};
+//             req.start_time =
+//                 std::chrono::duration_cast<std::chrono::milliseconds>(tp.time_since_epoch());
 
-            auto j = req.to_query_params();
-            auto r = client.get<types::Array<types::response::KLine>>(_SU("/api/v3/klines"), j);
-            ASSERT_EQ(req.start_time.count(), r.values[0].open_time.count());
-        });
-}
+//             auto j = req.to_query_params();
+//             auto r = client.get<types::Array<types::response::KLine>>(_SU("/api/v3/klines"), j);
+//             ASSERT_EQ(req.start_time.count(), r.values[0].open_time.count());
+//         });
+// }
 
 int main(int argc, char **argv)
 {

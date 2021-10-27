@@ -1,0 +1,35 @@
+{
+	"name": "C++",
+	"build": {
+		"dockerfile": "Dockerfile",
+		"args": {
+			"VARIANT": "base-devel"
+		}
+	},
+	"runArgs": [
+		"--cap-add=SYS_PTRACE",
+		"--security-opt",
+		"seccomp=unconfined"
+	],
+	// Set *default* container specific settings.json values on container create.
+	"settings": {
+		"cmake.cmakePath": "/usr/bin/cmake"
+	},
+	"extensions": [
+		"ms-vscode.cpptools",
+		"ms-vscode.cmake-tools",
+		"twxs.cmake",
+		"streetsidesoftware.code-spell-checker",
+		"mhutchie.git-graph",
+		"eamodio.gitlens",
+		"hbenl.vscode-test-explorer",
+		"Gruntfuggly.todo-tree",
+		"VisualStudioExptTeam.vscodeintellicode",
+		"christian-kohler.path-intellisense"
+	],
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+	// Use 'postCreateCommand' to run commands after the container is created.
+	"postCreateCommand": "sh -c '/home/vscode/.local/vcpkg/vcpkg integrate install && if [ -f dependencies.vcpkg ]; then for package in $(cat dependencies.vcpkg);do vcpkg install $package; done; fi'",
+	"remoteUser": "vscode"
+}

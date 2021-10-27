@@ -1,66 +1,54 @@
 #include <gtest/gtest.h>
-#include "binance_client.h"
-#include "binance_types.h"
-#include <algorithm>
-#include <vector>
-#include <date/date.h>
-#include <chrono>
-
-using namespace binance;
-using namespace date;
-using namespace std::chrono;
 
 class ClientTest : public ::testing::Test
 {
 protected:
-    ClientTest() : client{Client{_SU(""), _SU("")}}
+    ClientTest()
     {
     }
     void SetUp() override
     {
     }
     void TearDown() override {}
-
-    Client client;
 };
 
-TEST_F(ClientTest, JsonTest)
-{
-    types::request::KLines req{};
-    auto js = req.to_json().serialize();
-    ASSERT_STREQ(js.c_str(), _SU("{\"interval\":\"\",\"symbol\":\"\"}"));
-    req.symbol = _SU("BTCUSDT");
-    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::system_clock::now().time_since_epoch());
-    req.start_time = ms;
-    js = req.to_json().serialize();
+// TEST_F(ClientTest, JsonTest)
+// {
+//     types::request::KLines req{};
+//     auto js = req.to_json().serialize();
+//     ASSERT_STREQ(js.c_str(), _SU("{\"interval\":\"\",\"symbol\":\"\"}"));
+//     req.symbol = _SU("BTCUSDT");
+//     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+//         std::chrono::system_clock::now().time_since_epoch());
+//     req.start_time = ms;
+//     js = req.to_json().serialize();
 
-    utility::stringstream_t ss;
-    ss << "{\"interval\":\"\",\"startTime\":";
-    ss << ms.count();
-    ss << ",\"symbol\":\"BTCUSDT\"}";
-    ASSERT_STREQ(js.c_str(), ss.str().c_str());
-}
+//     utility::stringstream_t ss;
+//     ss << "{\"interval\":\"\",\"startTime\":";
+//     ss << ms.count();
+//     ss << ",\"symbol\":\"BTCUSDT\"}";
+//     ASSERT_STREQ(js.c_str(), ss.str().c_str());
+// }
 
-TEST_F(ClientTest, TestTrait)
-{
-    auto v = has_from_json<types::request::KLines>::value;
-    ASSERT_EQ(true, v);
-    v = has_from_json<types::response::KLine>::value;
-    ASSERT_EQ(true, v);
-    v = has_from_json<types::Array<types::response::KLine>>::value;
-    ASSERT_EQ(true, v);
-}
+// TEST_F(ClientTest, TestTrait)
+// {
+//     auto v = has_from_json<types::request::KLines>::value;
+//     ASSERT_EQ(true, v);
+//     v = has_from_json<types::response::KLine>::value;
+//     ASSERT_EQ(true, v);
+//     v = has_from_json<types::Array<types::response::KLine>>::value;
+//     ASSERT_EQ(true, v);
+// }
 
-TEST_F(ClientTest, Queries)
-{
-    types::request::KLines req{};
-    req.symbol = _SU("BTCUSDT");
-    req.interval = _SU("1m");
-    auto qp = req.to_query_params<params_map>();
-    auto str = to_query_string(qp);
-    ASSERT_STREQ(_SU("?interval=1m&symbol=BTCUSDT"), str.c_str());
-}
+// TEST_F(ClientTest, Queries)
+// {
+//     types::request::KLines req{};
+//     req.symbol = _SU("BTCUSDT");
+//     req.interval = _SU("1m");
+//     auto qp = req.to_query_params<params_map>();
+//     auto str = to_query_string(qp);
+//     ASSERT_STREQ(_SU("?interval=1m&symbol=BTCUSDT"), str.c_str());
+// }
 
 // TEST_F(ClientTest, TestGet)
 // {

@@ -6,36 +6,8 @@
 #define BINANCE_TYPES_H
 #include "binance_common.h"
 #include "binance_traits.h"
-#include <cpprest/http_client.h>
-#include <cpprest/filestream.h>
-#include <cpprest/containerstream.h>
-#include <cpprest/json.h>
-#include <cstdlib>
-#include <iostream>
-#include <chrono>
-#include <unordered_map>
-#include <map>
-#include <vector>
 #include <exception>
-#include <boost/multiprecision/cpp_dec_float.hpp>
-
-using namespace web;
-using namespace web::http;
-using namespace web::http::client;
-using namespace concurrency::streams;
-
-using milliseconds = std::chrono::milliseconds;
-
-template <typename T, typename U>
-using u_dict = std::unordered_map<T, U>;
-
-template <typename T, typename U>
-using dict = std::map<T, U>;
-
-using u_params_map = u_dict<string_t, string_t>;
-using params_map = dict<string_t, string_t>;
-using param_entry = std::pair<string_t, string_t>;
-using big_float = boost::multiprecision::cpp_dec_float_50;
+#include <sstream>
 
 namespace binance
 {
@@ -45,30 +17,30 @@ namespace binance
         struct binance_EXPORT Array
         {
             static constexpr auto _has_from_json = has_from_json<T>::value;
-            void from_json(json::value &val)
+            void from_json(json_value &val)
             {
-                if (!val.is_array())
-                {
-                }
-                auto arr = val.as_array();
-                values.resize(arr.size());
-                int i{0};
-                for (auto &&el : arr)
-                {
-                    values[i].from_json(el);
-                    i++;
-                }
+                // if (!val.is_array())
+                // {
+                // }
+                // auto arr = val.as_array();
+                // values.resize(arr.size());
+                // int i{0};
+                // for (auto &&el : arr)
+                // {
+                //     values[i].from_json(el);
+                //     i++;
+                // }
             }
-            json::array to_json() const
+            json_value to_json() const
             {
-                auto arr = json::array(values.size);
-                int i{0};
-                for (auto &&el : values)
-                {
-                    arr[i] = el.to_json();
-                    i++;
-                }
-                return arr;
+                // auto arr = json_value::array();
+                // int i{0};
+                // for (auto &&el : values)
+                // {
+                //     arr[i] = el.to_json();
+                //     i++;
+                // }
+                return {};
             }
 
             std::vector<T> values;
@@ -77,8 +49,8 @@ namespace binance
         {
             struct binance_EXPORT KLines
             {
-                string_t symbol;
-                string_t interval;
+                std::string symbol;
+                std::string interval;
                 milliseconds start_time;
                 milliseconds end_time;
                 int limit;
@@ -87,22 +59,22 @@ namespace binance
                 T to_query_params() const
                 {
                     T params{};
-                    params.insert(param_entry{_SU("symbol"), symbol});
-                    params.insert(param_entry{_SU("interval"), interval});
-                    if (start_time.count() > 0)
-                        params.insert(param_entry{_SU("startTime"),
-                                                  _itoa(start_time.count())});
-                    if (end_time.count() > 0)
-                        params.insert(param_entry{_SU("endTime"),
-                                                  _itoa(end_time.count())});
-                    if (limit > 0)
-                        params.insert(param_entry{_SU("limit"),
-                                                  _itoa(limit)});
+                    // params.insert(param_entry{_SU("symbol"), symbol});
+                    // params.insert(param_entry{_SU("interval"), interval});
+                    // if (start_time.count() > 0)
+                    //     params.insert(param_entry{_SU("startTime"),
+                    //                               _itoa(start_time.count())});
+                    // if (end_time.count() > 0)
+                    //     params.insert(param_entry{_SU("endTime"),
+                    //                               _itoa(end_time.count())});
+                    // if (limit > 0)
+                    //     params.insert(param_entry{_SU("limit"),
+                    //                               _itoa(limit)});
                     return params;
                 }
 
-                json::value to_json() const;
-                void from_json(json::value &obj);
+                json_value to_json() const;
+                void from_json(json_value &obj);
             };
         }
         namespace response
@@ -110,10 +82,10 @@ namespace binance
             struct binance_EXPORT Error : std::exception
             {
                 int64_t code;
-                string_t message;
+                std::string message;
 
-                json::value to_json() const;
-                void from_json(json::value &obj);
+                json_value to_json() const;
+                void from_json(json_value &obj);
 
                 const char *what() const noexcept override;
             };
@@ -132,17 +104,17 @@ namespace binance
                 big_float taker_buy_quote_asset_volume;
                 big_float ignore;
 
-                json::value to_json() const;
-                void from_json(json::value &obj);
+                json_value to_json() const;
+                void from_json(json_value &obj);
             };
         }
     }
 
     template <typename T = u_params_map>
-    binance_EXPORT string_t to_query_string(const T &params)
+    binance_EXPORT std::string to_query_string(const T &params)
     {
-        ostringstream_t stream;
-        string_t sym{"?"};
+        std::ostringstream stream;
+        std::string sym{"?"};
         for (auto &&pair : params)
         {
             stream

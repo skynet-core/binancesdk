@@ -31,7 +31,7 @@ void binance::types::response::Error::from_json(json_value &val)
 
 json_value binance::types::response::Error::to_json() const
 {
-    json_value obj;
+    // json_value obj;
     // obj[_SU("msg")] = json::value::string(message);
     // obj[_SU("code")] = json::value::number(code);
     return {};

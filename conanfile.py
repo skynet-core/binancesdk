@@ -45,6 +45,7 @@ class BinancesdkConan(ConanFile):
         cmake.build()
 
     def package(self):
+        self.copy("*.hpp", dst="include", src="src")
         self.copy("*.h", dst="include", src="src")
         self.copy("*.lib", dst="lib", keep_path=False)
         self.copy("*.dll", dst="bin", keep_path=False)
@@ -57,7 +58,6 @@ class BinancesdkConan(ConanFile):
     def package_info(self):
         if not self.settings.os == "Windows":
             self.settings.compiler = "gcc"
-            self.settings.compiler.version = "10.3"
             self.settings.compiler.libcxx = "libstdc++11"
             self.cpp_info.cxxflag = [
                 "-fsanitize=address", "-fno-omit-frame-pointer"]

@@ -2,6 +2,7 @@
 #include <boost/nowide/args.hpp>
 #include "binance_http.h"
 #include "binance_types.h"
+#include "boost_session.h"
 
 using namespace binance;
 
@@ -16,7 +17,7 @@ protected:
     }
     void TearDown() override {}
 
-    HTTPProvider m_client;
+    Session m_client;
 };
 
 TEST_F(HttpTest, TestGetRequest)

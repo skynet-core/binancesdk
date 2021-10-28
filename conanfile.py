@@ -15,7 +15,7 @@ class BinancesdkConan(ConanFile):
     generators = "cmake_paths", "cmake_find_package"
     install_folder = "build"
     # Binary configuration
-    settings = "os", "compiler", "build_type", "arch"
+    settings = "cppstd", "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False], "fPIC": [True, False]}
     default_options = {"shared": True, "fPIC": True}
 
@@ -24,9 +24,11 @@ class BinancesdkConan(ConanFile):
 
     def requirements(self):
         self.requires("openssl/1.1.1l")
+        self.requires("libcurl/7.78.0")
         self.requires("gtest/1.11.0")
         self.requires("boost/1.77.0")
-        # self.requires("date/3.0.1")
+        self.requires("uriparser/0.9.5")
+        self.requires("date/3.0.1")
 
     def config_options(self):
         if self.settings.os == "Windows":
@@ -40,7 +42,7 @@ class BinancesdkConan(ConanFile):
         tc.generate()
 
     def build(self):
-        cmake = CMake(self)
+        cmake = CMake(self, set_cmake_flags=True)
         cmake.configure()
         cmake.build()
 

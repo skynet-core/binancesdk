@@ -12,6 +12,13 @@ class BinancesdkTestConan(ConanFile):
     generators = "CMakeDeps", "CMakeToolchain", "VirtualBuildEnv", "VirtualRunEnv"
     apply_env = False
 
+    def requirements(self):
+        self.requires("openssl/1.1.1l")
+        self.requires("gtest/1.11.0")
+        self.requires("boost/1.77.0")
+        self.requires("uriparser/0.9.5")
+        # self.requires("date/3.0.1")
+
     def build(self):
         cmake = CMake(self)
         cmake.configure()

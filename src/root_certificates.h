@@ -1,5 +1,5 @@
 #ifndef BOOST_BEAST_CERTIFICATES_HPP
-#define BOOST_BEAST_HPP
+#define BOOST_BEAST_CERTIFICATES_HPP
 
 #include <boost/asio/ssl.hpp>
 #include <string>

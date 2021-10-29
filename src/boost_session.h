@@ -15,7 +15,6 @@
 #include <memory>
 #include <string>
 
-namespace network = boost::network;
 namespace beast = boost::beast;   // from <boost/beast.hpp>
 namespace http = beast::http;     // from <boost/beast/http.hpp>
 namespace net = boost::asio;      // from <boost/asio.hpp>
@@ -43,7 +42,7 @@ namespace binance
 
         // Objects are constructed with a strand to
         // ensure that handlers do not execute concurrently.
-        session(net::strand<net::system_executor> strand,
+        Session(net::strand<net::system_executor> strand,
                 ssl::context &ctx,
                 const std::string &uri,
                 int version)
@@ -56,8 +55,8 @@ namespace binance
     public:
         // Delegate construction to a private constructor to be able to use
         // the same strand for both I/O object.
-        explicit session(ssl::context &ctx)
-            : session(net::make_strand(net::system_executor()), ctx)
+        explicit Session(ssl::context &ctx, const std::string &uri, int version)
+            : Session(net::make_strand(net::system_executor()), ctx, uri, version)
         {
         }
 
@@ -68,7 +67,7 @@ namespace binance
             int version)
         {
             // Set SNI Hostname (many hosts need this to handshake successfully)
-            if (!SSL_set_tlsext_host_name(stream_.native_handle(), host_))
+            if (!SSL_set_tlsext_host_name(stream_.native_handle(), host_.c_str()))
             {
                 beast::error_code ec{static_cast<int>(::ERR_get_error()),
                                      net::error::get_ssl_category()};
@@ -85,10 +84,10 @@ namespace binance
 
             // Look up the domain name
             resolver_.async_resolve(
-                host,
-                port,
+                host_,
+                port_,
                 beast::bind_front_handler(
-                    &session::on_resolve,
+                    &Session::on_resolve,
                     shared_from_this()));
         }
 
@@ -107,7 +106,7 @@ namespace binance
             beast::get_lowest_layer(stream_).async_connect(
                 results,
                 beast::bind_front_handler(
-                    &session::on_connect,
+                    &Session::on_connect,
                     shared_from_this()));
         }
 
@@ -121,7 +120,7 @@ namespace binance
             stream_.async_handshake(
                 ssl::stream_base::client,
                 beast::bind_front_handler(
-                    &session::on_handshake,
+                    &Session::on_handshake,
                     shared_from_this()));
         }
 
@@ -137,7 +136,7 @@ namespace binance
             // Send the HTTP request to the remote host
             http::async_write(stream_, req_,
                               beast::bind_front_handler(
-                                  &session::on_write,
+                                  &Session::on_write,
                                   shared_from_this()));
         }
 
@@ -154,7 +153,7 @@ namespace binance
             // Receive the HTTP response
             http::async_read(stream_, buffer_, res_,
                              beast::bind_front_handler(
-                                 &session::on_read,
+                                 &Session::on_read,
                                  shared_from_this()));
         }
 
@@ -177,7 +176,7 @@ namespace binance
             // Gracefully close the stream
             stream_.async_shutdown(
                 beast::bind_front_handler(
-                    &session::on_shutdown,
+                    &Session::on_shutdown,
                     shared_from_this()));
         }
 
